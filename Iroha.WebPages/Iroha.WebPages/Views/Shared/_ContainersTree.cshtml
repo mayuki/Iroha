@@ -1,0 +1,27 @@
+﻿@using Iroha.WebPages.Models
+@model Tuple<Container, Container, Int32>
+@{
+    var container = Model.Item1;
+    var currentContainer = Model.Item2;
+    var depth = Model.Item3;
+}
+<li>
+    @if (container.Path != currentContainer.Path)
+    {
+        <a href="@Url.Action("List", "Pages", new { pagePath = @container.Path })">@container.Title (@container.Alias)</a>
+    }
+    else
+    {
+        <strong><a href="@Url.Action("List", "Pages", new { pagePath = @container.Path })">@container.Title (@container.Alias)</a></strong>
+    }
+
+    @if (currentContainer.Path.StartsWith(container.Path) && container.Contents.OfType<Container>().Any())
+    {
+        <ul>
+            @foreach (var child in container.Contents.OfType<Container>())
+            {
+                <text>@Html.Partial("_ContainersTree", new Tuple<Container, Container, Int32>(child, currentContainer, depth + 1))</text>
+            }
+        </ul>
+    }
+</li>

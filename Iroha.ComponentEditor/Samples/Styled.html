@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link rel="stylesheet" href="../Sources/css/Iroha.ComponentEditor.css" />
+<link rel="stylesheet" href="css/Iroha.ComponentEditor.Styled.css" />
+<script src="../Sources/js/jquery-1.6.4.min.js"></script>
+<script src="../Sources/js/jquery-ui-1.8.11.min.js"></script>
+<script src="../Sources/js/Iroha.ComponentEditor.js"></script>
+<script>
+
+function fromHtml() {
+    Iroha.ComponentEditor.UI.rebuildFromHtml($('#html-fragment').val());
+}
+function toHtml() {
+    var html = Iroha.ComponentEditor.UI.toHtml();
+    var contentDataJson = JSON.stringify(Iroha.ComponentEditor.UI.toContentData());
+
+    var escapedJson = $('<div />').text(contentDataJson).text();
+    $('#html-fragment').val(html + '<!-- '+ escapedJson + ' -->');
+    $('#preview').html(html);
+}
+
+$(function () {
+    $.get('xml/components-styled.xml', function (data) { 
+        Iroha.ComponentEditor.componentLoader = {
+            load: function () {
+                var components = [];
+                var componentElements = data.getElementsByTagName('Component');
+                for (var i = 0; i < componentElements.length; i++) {
+                    var componentE = componentElements[i];
+                    var templateE = componentE.getElementsByTagName('Template')[0];
+                    var uiTemplateE = componentE.getElementsByTagName('UITemplate')[0];
+                    var hidden = componentE.getAttribute('hidden');
+                    components.push(new Iroha.ComponentEditor.Component(
+                         componentE.getAttribute('type')
+                        ,componentE.getAttribute('id')
+                        ,componentE.getAttribute('name')
+                        ,componentE.getAttribute('content-type')
+                        ,(templateE.textContent || templateE.text).replace(/^\s*/mg, '')
+                        ,(uiTemplateE.textContent || uiTemplateE.text)
+                        ,templateE.getAttribute('bindings')
+                        ,hidden ? hidden != '' : false
+                    ));
+                }
+                return components;
+            }
+        };
+        Iroha.ComponentEditor.setup();
+        Iroha.ComponentEditor.UI.setup();
+
+    }, 'xml');
+})
+</script>
+<style>
+    _body { font-size: 12px; font-family: 'Arial', 'メイリオ', san-serif; }
+</style>
+</head>
+
+<body>
+<div id="iroha-component-editor" class="component">
+<div class="component-container"></div>
+<!-- /iroha-component-editor --></div>
+
+<textarea id="html-fragment" rows="20" cols="80">
+<h1 data-iroha-component="header01">VistaFace</h1>
+<h2 data-iroha-component="header02">description</h2>
+<div class="paragraph01" data-iroha-component="paragraph01"><p>コンピュータのCPU/メモリ利用率を表情で表すWindows VistaのWindows サイドバー用ガジェットです。その名のとおりMacFaceにインスパイアされています。</p><p>顔パターンはMacFace用のものを利用でき、ガジェットに内蔵されているパターン以外に変更できます。</p><p>このガジェットには顔パターン「名称未設定シリーズ」を同梱しています。</p></div>
+<h2 data-iroha-component="header02">requirement</h2>
+<div class="paragraph01" data-iroha-component="paragraph01"><p>このサイドバーガジェットの動作にはMicrosoft Windows Vistaを必要とします。Home Premium/Ultimateにて動作確認を行っています。</p><p>Windows Vista以外のWindowsをご利用の場合にはMacFace for Windowsを、Mac OS Xをご利用の場合にはMacFaceを利用できます。</p></div>
+<h2 data-iroha-component="header02">顔パターンの入手とインストール</h2>
+<div class="paragraph01" data-iroha-component="paragraph01"><p>利用できる顔パターンはMacFace for WindowsのWikiなどから探すことができます。</p><p>顔パターンファイル(faceDef.plistを含む.mcfaceフォルダ)をドラッグアンドドロップすることで顔パターンをインストールできます。インストールした顔パターンはガジェットのアンインストールとともに削除されます(サイドバーから削除しただけでは消えません)。</p></div>
+</textarea>
+<input type="button" onclick="toHtml()" value="to HTML" />
+<input type="button" onclick="fromHtml()" value="from HTML" />
+
+
+<div id="preview"></div>
+
+<script type="application/x-iroha-html" id="template-add-component-bar">
+<div class="add-component"><a class="add-component-command" href="javascript:void(0)">+ 項目を追加</a>
+<div class="components-list">
+<ul><!--li><a href="#">テキスト</a></li--></ul>
+<!-- /components-list --></div>
+</div>
+</script>
+
+<script type="application/x-iroha-html" id="template-component-frame">
+<section class="component">
+<header>
+<h1 class="component-name">[Component Name]</h1>
+<div><a class="component-command-remove" href="#">削除</a></div>
+</header>
+<div class="component-container">
+<!-- /component-container --></div>
+<!-- /component --></section>
+</script>
+</body>
+
+</html>

@@ -1,0 +1,72 @@
+﻿@model Iroha.WebPages.ViewModels.Pages.CreateContentPageViewModel
+@using Iroha.WebPages.Models
+
+@{
+    ViewBag.Title = "新しいページを作成";
+
+}
+
+<nav id="topicPath">
+<h1>Path</h1>
+<ul>
+@foreach (var item in IrohaHelper.TraverseParent(Model.Container).Reverse())
+{
+<li><a href="@Url.Action("List", new { pagePath = item.Path })">@item.Title</a></li>
+}
+<li>@Model.Container.Title</li>
+</ul>
+</nav>
+
+<nav id="containersTree">
+<h1>Containers</h1>
+<ul>
+@Html.Partial("_ContainersTree", new Tuple<Container,Container, Int32>(Model.RootContainer, Model.Container, 0))
+</ul>
+</nav>
+
+<div id="content">
+<section>
+<header>
+<h1>@Model.Container.Title に新しいページを作成</h1>
+</header>
+
+@if (!ViewData.ModelState.IsValid)
+{<text>
+<section>
+<h1>エラー</h1>
+<ul>
+@foreach (var valueType in ViewData.ModelState)
+{<text>
+@foreach (var error in valueType.Value.Errors)
+{<text>
+<li>@error.ErrorMessage</li>
+</text>}
+</text>}
+</ul>
+</section>
+</text>}
+
+@using (Html.BeginForm("CreateContentPage", "Pages", new { PagePath = Model.Container.Path }, FormMethod.Post))
+{<text>
+<p>
+<label>
+ページのURL名: @(Model.Container.Path)
+@Html.Hidden("InputModel.PagePath", Model.Container.Path)
+@Html.TextBoxFor(x => x.InputModel.ContentName, new { placeholder = "Page1" })
+<!--input type="text" id="ContentName" name="ContentName"
+       placeholder="Page1"
+       data-val="true"
+       data-val-required="ページ名は必須です"
+       data-val-regex="ページ名には &quot; < > : / \ を含めることはできません"
+       data-val-regex-pattern="[^:<>&quot;/\\]+"
+       data-val-remote="&amp;#39;ContentName&amp;#39; is invalid."
+       data-val-remote-additionalfields="*.ContentName"
+       data-val-remote-url="@Url.Action("IsNewContentAvailable", new { pagePath = Model.Container.Path })"
+/-->
+</label>
+<span class="field-validation-valid" data-valmsg-for="InputModel.ContentName" data-valmsg-replace="true"></span></p>
+<p>ページ名は255文字以内で、ドット以外で始まり ? * | &quot; < > : / \ を含まない名前を入力してください。URLの一部となるため半角英数で入力することを推奨します。</p>
+<input type="submit" value="作成" />
+@Html.AntiForgeryToken()
+</text>}
+<!--/content--></div>

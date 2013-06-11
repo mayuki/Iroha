@@ -1,0 +1,60 @@
+.component 
+{
+    background-color: #fff;
+}
+.component.component-type-Generic,
+.component.component-type-Container
+{
+    border-style: none;
+    padding: 0;
+    margin: 0.5em;
+}
+.component.component-type-Container
+{
+    border: 1px solid #c0c0c0;
+}
+.component .component-container
+{
+    padding: 0;
+}
+.component .component-name
+{
+    color: #c0c0c0;
+    background-color: #f0f0f0;
+    border-style: none;
+    width: 10em;
+}
+.component.component-type-Generic .component-name
+{
+    position: absolute;
+    right: 0;
+}
+.component input[type=text],
+.component textarea 
+{
+    border: 1px solid #f0f0f0;
+    font-size: 1em;
+    font-family: "Arial", "ÉÅÉCÉäÉI", san-serif;
+}
+.component input[type=text]:hover,
+.component textarea:hover
+{
+    border: 1px solid #c0c0c0;
+}
+/*
+.component .preview-header01
+{
+    border-style: none;
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+.component .preview-header01 input
+{
+    font-weight: inherit;
+    font-size: inherit;
+}
+.component .preview-section01 .preview-header01 input
+{
+    font-size: 90%;
+}*/

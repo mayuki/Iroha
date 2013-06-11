@@ -1,0 +1,12 @@
+﻿@using Iroha.WebPages.Models
+@functions {
+
+    public static IEnumerable<Containable> TraverseParent(Containable containable)
+    {
+        if (containable.Parent == null)
+            return Enumerable.Empty<Containable>();
+
+        return Enumerable.Repeat(containable.Parent, 1).Union(TraverseParent(containable.Parent));
+    }
+
+}

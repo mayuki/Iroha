@@ -1,0 +1,74 @@
+﻿@using Iroha.WebPages.Models
+@model Iroha.WebPages.ViewModels.Pages.ListViewModel
+@{
+    ViewBag.Title = "Pages: " + Model.Container.Alias;
+}
+
+<nav id="topicPath">
+<h1>Path</h1>
+<ul>
+@foreach (var item in IrohaHelper.TraverseParent(Model.Container).Reverse())
+{
+<li><a href="@Url.Action("List", new { pagePath = item.Path })">@item.Title</a></li>
+}
+<li>@Model.Container.Title</li>
+</ul>
+</nav>
+
+<nav id="containersTree">
+<h1>Containers</h1>
+<ul>
+@Html.Partial("_ContainersTree", new Tuple<Container,Container, Int32>(Model.RootContainer, Model.Container, 0))
+</ul>
+</nav>
+
+<div id="content">
+
+<section>
+<header>
+<h1>@Model.Container.Title</h1>
+</header>
+
+<nav class="localNav">
+<ul>
+<li><a href="@Url.Action("CreateContentPage", new { pagePath = Model.Container.Path })">ページを作成</a></li>
+<li><a href="@Url.Action("CreateContainer", new { pagePath = Model.Container.Path })">コンテナを作成</a></li>
+@if (Model.Container.Parent != null)
+{
+<li class="delete">@using (Html.BeginForm("Delete", "Pages", new { pagePath = Model.Container.Path }, FormMethod.Post, new { onsubmit = "return confirm('コンテナを削除しますか? コンテナは削除すると復元できません。');" }))
+                   {
+                       @Html.AntiForgeryToken()
+<input type="submit" name="submit" value="コンテナを削除" />
+                   }</li>
+}
+</ul>
+</nav>
+
+<table class="listView">
+<thead>
+<tr>
+<th>タイトル</th>
+<th>URL名</th>
+<th>変更日</th>
+<th>変更者</th>
+<th>作成者</th>
+<th>作成日</th>
+</tr>
+</thead>
+<tbody>
+@foreach (var content in Model.Container.Contents.OfType<ContentPage>())
+{<text>
+<tr>
+<td><a href="@Url.Action("Edit", new { pagePath = content.Path })">@content.Title</a></td>
+<td>@content.Alias</td>
+<td>@content.ModifiedAt</td>
+<td>@content.Metadata.ModifiedBy</td>
+<td>@content.CreatedAt</td>
+<td>@content.Metadata.CreatedBy</td>
+</tr>
+</text>}
+</tbody>
+</table>
+
+</section>
+<!--/content--></div>

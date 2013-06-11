@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+@{
+    var isDirIndex = Directory.Exists(Server.MapPath(Context.Request.AppRelativeCurrentExecutionFilePath));
+    var requestContentPageDir = Path.GetDirectoryName(Context.Request.AppRelativeCurrentExecutionFilePath.TrimEnd('/') + (isDirIndex ? "/" : ""));
+    var currentPageDir = Server.MapPath(requestContentPageDir);
+}
+<html>
+<head>
+<meta charset="utf-8" />
+<title>@Page.Title</title>
+</head>
+<body>
+
+@RenderBody()
+
+@* Local: _LocalNav *@
+@if (File.Exists(Path.Combine(currentPageDir, "_LocalNav.cshtml")))
+{
+<aside class="local-nav">
+@RenderPage(requestContentPageDir + "/_LocalNav.cshtml")
+<!-- /local-nav --></aside>
+}
+
+@* Local: _LocalNavItems *@
+@if (File.Exists(Path.Combine(currentPageDir, "_LocalNavItems.cshtml")))
+{
+<aside class="local-nav-sibling-pages">
+@RenderPage(requestContentPageDir + "/_LocalNavItems.cshtml")
+<!-- /local-nav-sibling-pages --></aside>
+}
+
+@* Shared/Partials/_LocalNav *@
+<aside class="local-nav-shared">
+@RenderPage("~/_Shared/Partials/_LocalNav.cshtml", Model)
+<!-- /local-nav-shared --></aside>
+
+</body>
+</html>

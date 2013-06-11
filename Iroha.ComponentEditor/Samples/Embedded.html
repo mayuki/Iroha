@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link rel="stylesheet" href="../Sources/css/Iroha.ComponentEditor.css" />
+<script src="../Sources/js/jquery-1.6.4.min.js"></script>
+<script src="../Sources/js/jquery-ui-1.8.11.min.js"></script>
+<script src="../Sources/js/Iroha.ComponentEditor.js"></script>
+<script>
+
+function fromHtml() {
+    Iroha.ComponentEditor.UI.rebuildFromHtml($('#html-fragment').val());
+}
+function toHtml() {
+    var html = Iroha.ComponentEditor.UI.toHtml();
+
+    $('#html-fragment').val(html);
+    $('#preview').html(html);
+}
+
+$(function () {
+    Iroha.ComponentEditor.setup();
+    Iroha.ComponentEditor.UI.setup();
+})
+</script>
+
+<div id="iroha-component-editor" class="component">
+<div class="component-container"></div>
+<!-- /iroha-component-editor --></div>
+
+<textarea id="html-fragment" rows="20" cols="80">
+<section data-iroha-component="section01">
+<h1 data-iroha-component="header01">Section 1</h1>
+<p data-iroha-component="paragraph01">nantoka
+
+kantoka</p>
+<ul data-iroha-component="list01">
+<li data-iroha-component="list-item03"><a href="http://www.google.com">Google</a></li>
+<li data-iroha-component="list-item03"><a href="http://www.example.com">example.com</a></li>
+<li data-iroha-component="list-item01">ListItem</li>
+</ul>
+</section>
+
+<h1 data-iroha-component="header01">Nantoka 2</h1>
+<p data-iroha-component="paragraph01">hauhau
+maumau</p>
+</textarea>
+<input type="button" onclick="toHtml()" value="to HTML" />
+<input type="button" onclick="fromHtml()" value="from HTML" />
+
+
+<div id="preview"></div>
+
+<script type="application/x-iroha-html" id="template-add-component-bar">
+<div class="add-component"><a class="add-component-command" href="javascript:void(0)">+ 項目を追加</a>
+<div class="components-list">
+<ul><!--li><a href="#">テキスト</a></li--></ul>
+<!-- /components-list --></div>
+</div>
+</script>
+
+<script type="application/x-iroha-html" id="template-component-frame">
+<section class="component">
+<header>
+<h1 class="component-name">[Component Name]</h1>
+<div><a class="component-command-remove" href="#">削除</a></div>
+</header>
+<div class="component-container">
+<!-- /component-container --></div>
+<!-- /component --></section>
+</script>
+
+<script type="application/x-iroha-component"
+        data-iroha-component="header01"
+        data-iroha-component-name="見出し1"
+        data-iroha-component-type="Generic"
+>
+<UITemplate>
+<input type="text" class="input-target" data-iroha-component-content="1" />
+</UITemplate>
+
+<Template bindings="1=h1">
+<h1>[Content]</h1>
+</Template>
+</script>
+
+<script type="application/x-iroha-component"
+        data-iroha-component="paragraph01"
+        data-iroha-component-name="文章"
+        data-iroha-component-type="Generic"
+>
+<UITemplate>
+<textarea class="input-target" data-iroha-component-content="1"></textarea>
+</UITemplate>
+
+<Template bindings="1=p|paragraph">
+<p>[Content]</p>
+</Template>
+</script>
+
+<script type="application/x-iroha-component"
+        data-iroha-component="section01"
+        data-iroha-component-name="セクション"
+        data-iroha-component-type="Container"
+        data-iroha-component-content-type="@Generic,@Container"
+>
+<UITemplate>
+<section class="component">
+<header>
+<h1 class="component-name">[Component Name]</h1>
+<div><a class="component-command-remove" href="#">削除</a></div>
+</header>
+<div class="component-container">
+<!-- /component-container --></div>
+<!-- /component --></section>
+</UITemplate>
+
+<Template bindings="1=section">
+<section>
+[Content]
+</section>
+</Template>
+</script>
+
+<script type="application/x-iroha-component"
+        data-iroha-component="list01"
+        data-iroha-component-name="リスト"
+        data-iroha-component-type="Container"
+        data-iroha-component-content-type="#list-item01,#list-item03"
+>
+<UITemplate>
+<section class="component">
+<header>
+<h1 class="component-name">[Component Name]</h1>
+<div><a class="component-command-remove" href="#">削除</a></div>
+</header>
+<ul class="component-container">
+<!-- /component-container --></ul>
+<!-- /component --></section>
+</UITemplate>
+
+<Template bindings="1=ul">
+<ul>
+[Content]
+</ul>
+</Template>
+</script>
+
+<script type="application/x-iroha-component"
+        data-iroha-component="list02"
+        data-iroha-component-name="見出し付きリスト"
+        data-iroha-component-type="Container"
+        data-iroha-component-content-type="#list-item02"
+>
+<UITemplate>
+<section class="component">
+<header>
+<h1 class="component-name">[Component Name]</h1>
+<div><a class="component-command-remove" href="#">削除</a></div>
+</header>
+<ul class="component-container">
+<!-- /component-container --></ul>
+<!-- /component --></section>
+</UITemplate>
+
+<Template bindings="1=ul">
+<ul>
+[Content]
+</ul>
+</Template>
+</script>
+
+<script type="application/x-iroha-component"
+        data-iroha-component="list-item01"
+        data-iroha-component-name="項目"
+        data-iroha-component-type="Children"
+>
+<UITemplate>
+<li class="component"><input data-iroha-component-content="1" class="input-target" type="text" value="" />
+<a class="component-command-remove" href="#">×</a></li>
+</UITemplate>
+
+<Template bindings="1=li">
+<li>[Content]</li>
+</Template>
+</script>
+
+
+<script type="application/x-iroha-component"
+        data-iroha-component="list-item02"
+        data-iroha-component-name="項目"
+        data-iroha-component-type="Children"
+>
+<UITemplate>
+<li class="component">
+<input class="input-target" data-iroha-component-content="1" type="text" value="" />:
+<input class="input-target" data-iroha-component-content="2" type="text" value="" />
+<a class="component-command-remove" href="#">×</a>
+</li>
+</UITemplate>
+
+<Template bindings="1=span.listitem-label, 2=span.listitem-content">
+<li><span class="listitem-label">[Content1]</span>: <span class="listitem-content">[Content2]</span></li>
+</Template>
+</script>
+
+<script type="application/x-iroha-component"
+        data-iroha-component="list-item03"
+        data-iroha-component-name="リンク"
+        data-iroha-component-type="Children"
+>
+<UITemplate>
+<li class="component"><label>URL: <input data-iroha-component-content="1" class="input-target" type="text" value="" /></label><br />
+<label>ラベル: <input data-iroha-component-content="2" class="input-target" type="text" value="" /></label>
+<a class="component-command-remove" href="#">×</a></li>
+</UITemplate>
+
+<Template bindings="1=a@href, 2=a">
+<li><a href="">[Content]</a></li>
+</Template>
+</script>

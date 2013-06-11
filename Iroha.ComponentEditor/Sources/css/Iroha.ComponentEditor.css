@@ -1,0 +1,117 @@
+#iroha-component-editor
+{
+    border: 1px solid #808080;
+    padding: 0.5em;
+    color: #000;
+    background-color: #fff;
+}
+.component
+{
+    color: #000;
+    background-color: #fff;
+}
+.component .component-name
+{
+    font-size: 1em;
+    padding: 0.5em;
+    margin: 0;
+    border-bottom: 1px solid #c0c0c0;
+    background-color: #f0f0f0;
+    color: #000;
+    width: auto;
+}
+.component header
+{
+    position: relative;
+    cursor: move;
+}
+.component header .component-command-remove
+{
+    cursor: pointer;
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+}
+
+.component .ui-sortable-helper
+{
+    box-shadow: 0 0 0.5em #808080;
+    border: 1px solid #808080;
+}
+.component.component-type-Generic,
+.component.component-type-Container
+{
+    border: 1px solid #c0c0c0;
+    margin-bottom: 1em;
+    padding: 0;
+}
+.component .component-container
+{
+    padding: 0.5em;
+}
+.component .component-container .component-type-Generic input[type=text]
+{
+    width: 99%;
+}
+.component .component-container .component-type-Children
+{
+    cursor: move;
+}
+.component .component-container .component-type-Children *
+{
+    cursor: auto;
+}
+.component .component-container .component-type-Children input[type=text]
+{
+    width: 20em;
+}
+.component .component-container .component-type-Generic textarea
+{
+    width: 99%;
+    height: 10em;
+}    
+    
+.component ul
+{
+    list-style-position: inside;
+}
+    
+.add-component 
+{
+    border: 1px solid #c0c0c0;
+    background-color: #f0f0f0;
+}
+
+.add-component a
+{
+    display: block;
+    padding: .5em;
+}
+.add-component .components-list
+{
+    background-color: #fff;
+    text-align: left;
+    border: 1px solid #c0c0c0;
+    display: none;
+}
+.add-component .components-list ul
+{
+    margin: 0;
+    padding: 0.5em;
+    list-style-type: none;
+}
+.add-component .components-list ul li
+{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+.add-component .components-list ul li a
+{
+    border: 1px solid #fff;
+}
+.add-component .components-list ul li a:hover
+{
+    border: 1px solid #808080;
+    background-color: #f0f0f0;
+}

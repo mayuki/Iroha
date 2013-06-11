@@ -1,0 +1,217 @@
+﻿@model Iroha.WebPages.ViewModels.Pages.EditViewModel
+@using Iroha.WebPages.Models
+@{
+    ViewBag.Title = "Home";
+}
+@section LocalResources {
+<script src="@Url.Content("~/Shared/Iroha.ComponentEditor/js/Iroha.ComponentEditor.js")"></script>
+<link rel="stylesheet" href="@Url.Content("~/Shared/Iroha.ComponentEditor/css/Iroha.ComponentEditor.css")" />
+<script>
+$(function () {
+    var originalHtml = $('#html-source textarea').val();
+    if (originalHtml.replace(/^\s|\s+$/g, '') != '') {
+        if (!originalHtml.match(/<!--\s*Using:Iroha\.ComponentEditor\s*-->/)) {
+            $('#iroha-component-editor').hide();
+            return;
+        }
+    }
+
+    var componentEditorEnabled = true;
+    function updateEditorSource() {
+        $('#html-source textarea').val("<!-- Using:Iroha.ComponentEditor -->\r\n"+Iroha.ComponentEditor.UI.toHtml());
+    }
+    $('#html-source').hide();
+    $('<a href="">HTMLを編集する</a>')
+        .click(function (e) {
+            e.preventDefault();
+            updateEditorSource();
+            $('#iroha-component-editor').hide();
+            $('#html-source').show();
+            $(this).remove();
+
+            componentEditorEnabled = false;
+        }).insertBefore($('#iroha-component-editor'));
+    
+    $('input[type=submit][name=save]').click(function(e) {
+        if (componentEditorEnabled) {
+            updateEditorSource();
+        }
+    });
+    
+    $.get('@Url.Content("~/Shared/Iroha.ComponentEditor/data/components.xml")', function (data) { 
+        Iroha.ComponentEditor.componentLoader = {
+            load: function () {
+                var components = [];
+                var componentElements = data.getElementsByTagName('Component');
+                for (var i = 0; i < componentElements.length; i++) {
+                    var componentE = componentElements[i];
+                    var templateE = componentE.getElementsByTagName('Template')[0];
+                    var uiTemplateE = componentE.getElementsByTagName('UITemplate')[0];
+                    var hidden = componentE.getAttribute('hidden');
+                    components.push(new Iroha.ComponentEditor.Component(
+                         componentE.getAttribute('type')
+                        ,componentE.getAttribute('id')
+                        ,componentE.getAttribute('name')
+                        ,componentE.getAttribute('content-type')
+                        ,(templateE.textContent || templateE.text).replace(/^\s*/mg, '')
+                        ,(uiTemplateE.textContent || uiTemplateE.text)
+                        ,templateE.getAttribute('bindings')
+                        ,hidden ? hidden != '' : false
+                    ));
+                }
+                return components;
+            }
+        };
+        Iroha.ComponentEditor.setup();
+        Iroha.ComponentEditor.UI.setup();
+        
+        Iroha.ComponentEditor.UI.rebuildFromHtml($('#html-source textarea').val());
+    }, 'xml');
+})
+</script>
+}
+
+<nav id="topicPath">
+<h1>Path</h1>
+<ul>
+@foreach (var item in IrohaHelper.TraverseParent(Model.Content).Reverse())
+{
+<li><a href="@Url.Action("List", new { pagePath = item.Path })">@item.Title</a></li>
+}
+<li>@Model.Content.Title</li>
+</ul>
+</nav>
+
+<nav id="containersTree">
+<h1>Containers</h1>
+<ul>
+@Html.Partial("_ContainersTree", new Tuple<Container, Container, Int32>(Model.RootContainer, Model.Content.Parent, 0))
+</ul>
+</nav>
+
+<div class="contentEditor" id="content">
+
+<section>
+
+@if (!String.IsNullOrWhiteSpace((TempData["Notice"] ?? "").ToString()))
+{ 
+<div class="notice">
+<p>@TempData["Notice"]</p>
+</div>
+}
+
+@if (Model.Version != null)
+{
+<div class="notice">
+<p>@Model.Version.Metadata.ModifiedAt に @Model.Version.Metadata.ModifiedBy によって編集されたコンテンツを読み込んでいます。保存すると表示している内容が最新となります。<a href="@Url.Action("Edit", new { pagePath = Model.Content.Path })">この編集をキャンセルする</a>。</p>
+</div>
+}
+
+@using (Html.BeginForm("Edit", "Pages", FormMethod.Post))
+{<text>
+<header>
+<h1>@Html.TextBoxFor(x => x.InputModel.Title)</h1>
+<table id="metadata">
+<tr>
+<th>パス</th>
+<td>@Model.Content.Path</td>
+</tr>
+<tr>
+<th>変更日</th>
+<td>@Model.Content.Metadata.ModifiedAt</td>
+</tr>
+<tr>
+<th>変更者</th>
+<td>@Model.Content.Metadata.ModifiedBy</td>
+</tr>
+<tr>
+<th>作成日</th>
+<td>@Model.Content.Metadata.CreatedAt</td>
+</tr>
+<tr>
+<th>作成者</th>
+<td>@Model.Content.Metadata.CreatedBy</td>
+</tr>
+</table>
+</header>
+
+@if (Model.Content.IsRawContent)
+{
+    <p>このページはアプリケーションを含んでいるか、自動的に生成されています。編集するには権限が必要です。</p>
+}
+else
+{
+<div class="editorAndPreview">
+<section>
+<h1>内容</h1>
+<div id="iroha-component-editor" class="component">
+<div class="component-container"></div>
+<!-- /iroha-component-editor --></div>
+<div id="html-source">
+<p>注意:ComponentEditorがサポートしていないHTMLに変更する場合には&lt;!-- Using:Iroha.ComponentEditor --&gt;マークを削除してください。</p>
+@Html.TextAreaFor(x => x.InputModel.Body, new { rows = 20, cols = 80 })
+</div>
+</section>
+<!--/editorAndPreview--></div>
+
+<nav class="localNav">
+<ul>
+<li><input type="submit" name="save" value="保存" /></li>
+</ul>
+</nav>
+
+@Html.Hidden("PagePath", Model.Content.Path)
+@Html.AntiForgeryToken()
+}
+
+</text>}
+
+@using (Html.BeginForm("Delete", "Pages", new { pagePath = Model.Content.Path }, FormMethod.Post, new { onsubmit = "return confirm('ページを削除しますか? ページは削除すると復元できません。');" }))
+{
+<nav class="localNav">
+<ul>
+<li class="delete">
+<input class="button01" type="submit" name="submit" value="× ページを削除" />
+</li>
+</ul>
+</nav>
+}
+
+
+<section class="previous-versions">
+<h1>以前のバージョン (最近保存した10回分を表示しています)</h1>
+@if (Model.Versions.Any())
+{<ul>
+@foreach (var version in Model.Versions.Take(10))
+{
+<li><a href="@Url.Action("Edit", new { pagePath = Model.Content.Path, Version = version.Ticks })">@version</a></li>
+}
+</ul>
+}
+else
+{
+<p>以前のバージョンは作成されていません。</p> 
+}
+</section>
+
+</section>
+<!--/content--></div>
+
+<script type="application/x-iroha-html" id="template-add-component-bar">
+<div class="add-component"><a class="add-component-command" href="javascript:void(0)">+ 項目を追加</a>
+<div class="components-list">
+<ul><!--li><a href="#">テキスト</a></li--></ul>
+<!-- /components-list --></div>
+</div>
+</script>
+
+<script type="application/x-iroha-html" id="template-component-frame">
+<section class="component">
+<header>
+<h1 class="component-name">[Component Name]</h1>
+<div><a class="component-command-remove" href="#">削除</a></div>
+</header>
+<div class="component-container">
+<!-- /component-container --></div>
+<!-- /component --></section>
+</script>

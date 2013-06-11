@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link rel="stylesheet" href="../Sources/css/Iroha.ComponentEditor.css" />
+<script src="../Sources/js/jquery-1.6.4.min.js"></script>
+<script src="../Sources/js/jquery-ui-1.8.11.min.js"></script>
+<script src="../Sources/js/Iroha.ComponentEditor.js"></script>
+<script>
+
+function fromHtml() {
+    Iroha.ComponentEditor.UI.rebuildFromHtml($('#html-fragment').val());
+}
+function toHtml() {
+    var html = Iroha.ComponentEditor.UI.toHtml();
+    var contentDataJson = JSON.stringify(Iroha.ComponentEditor.UI.toContentData());
+
+    var escapedJson = $('<div />').text(contentDataJson).text();
+    $('#html-fragment').val(html + '<!-- '+ escapedJson + ' -->');
+    $('#preview').html(html);
+}
+
+$(function () {
+    $.get('xml/components.xml', function (data) { 
+        Iroha.ComponentEditor.componentLoader = {
+            load: function () {
+                var components = [];
+                var componentElements = data.getElementsByTagName('Component');
+                for (var i = 0; i < componentElements.length; i++) {
+                    var componentE = componentElements[i];
+                    var templateE = componentE.getElementsByTagName('Template')[0];
+                    var uiTemplateE = componentE.getElementsByTagName('UITemplate')[0];
+                    var hidden = componentE.getAttribute('hidden');
+                    components.push(new Iroha.ComponentEditor.Component(
+                         componentE.getAttribute('type')
+                        ,componentE.getAttribute('id')
+                        ,componentE.getAttribute('name')
+                        ,componentE.getAttribute('content-type')
+                        ,(templateE.textContent || templateE.text).replace(/^\s*/mg, '')
+                        ,(uiTemplateE.textContent || uiTemplateE.text)
+                        ,templateE.getAttribute('bindings')
+                        ,hidden ? hidden != '' : false
+                    ));
+                }
+                return components;
+            }
+        };
+        Iroha.ComponentEditor.setup();
+        Iroha.ComponentEditor.UI.setup();
+
+    }, 'xml');
+})
+</script>
+<style>
+    body { font-size: 12px; font-family: 'Arial', 'メイリオ', san-serif; }
+</style>
+</head>
+
+<body>
+<div id="iroha-component-editor" class="component">
+<div class="component-container"></div>
+<!-- /iroha-component-editor --></div>
+
+<textarea id="html-fragment" rows="20" cols="80">
+<section data-iroha-component="section01">
+<h1 data-iroha-component="header01">Section 1</h1>
+<p data-iroha-component="paragraph01">nantoka
+
+kantoka</p>
+<ul data-iroha-component="list01">
+<li data-iroha-component="list-item03"><a href="http://www.google.com">Google</a></li>
+<li data-iroha-component="list-item03"><a href="http://www.example.com">example.com</a></li>
+<li data-iroha-component="list-item01">ListItem</li>
+</ul>
+</section>
+
+<h1 data-iroha-component="header01">Nantoka 2</h1>
+<p data-iroha-component="paragraph01">hauhau
+maumau</p>
+</textarea>
+<input type="button" onclick="toHtml()" value="to HTML" />
+<input type="button" onclick="fromHtml()" value="from HTML" />
+
+
+<div id="preview"></div>
+
+<script type="application/x-iroha-html" id="template-add-component-bar">
+<div class="add-component"><a class="add-component-command" href="javascript:void(0)">+ 項目を追加</a>
+<div class="components-list">
+<ul><!--li><a href="#">テキスト</a></li--></ul>
+<!-- /components-list --></div>
+</div>
+</script>
+
+<script type="application/x-iroha-html" id="template-component-frame">
+<section class="component">
+<header>
+<h1 class="component-name">[Component Name]</h1>
+<div><a class="component-command-remove" href="#">削除</a></div>
+</header>
+<div class="component-container">
+<!-- /component-container --></div>
+<!-- /component --></section>
+</script>
+</body>
+
+</html>

@@ -1,0 +1,303 @@
+<Components>
+    <Component id="header01"
+               name="見出し1"
+               type="Generic"
+    >
+        <UITemplate><![CDATA[
+            <input type="text" class="input-target" data-iroha-component-content="1" />
+        ]]></UITemplate>
+
+        <Template bindings="1=h1"><![CDATA[
+            <h1>[Content]</h1>
+        ]]></Template>
+    </Component>
+    <Component id="header02"
+               name="見出し2"
+               type="Generic"
+    >
+        <UITemplate>
+            <![CDATA[
+            <input type="text" class="input-target" data-iroha-component-content="1" />
+        ]]>
+        </UITemplate>
+
+        <Template bindings="1=h2">
+            <![CDATA[
+            <h2>[Content]</h2>
+        ]]>
+        </Template>
+    </Component>
+
+    <Component id="paragraph01"
+               name="文章"
+               type="Generic"
+    >
+        <UITemplate><![CDATA[
+            <textarea class="input-target" data-iroha-component-content="1"></textarea>
+        ]]></UITemplate>
+
+        <Template bindings="1=div|paragraph"><![CDATA[
+            <div class="paragraph01">[Content]</div>
+        ]]></Template>
+        
+        
+    </Component>
+
+    <Component id="section01"
+               name="セクション"
+               type="Container"
+               content-type="@Generic,@Container"
+    >
+        <UITemplate><![CDATA[
+            <section class="component">
+                <header>
+                    <h1 class="component-name">[Component Name]</h1>
+                    <div>
+                        <a class="component-command-remove" href="#">削除</a>
+                    </div>
+                </header>
+                <div class="component-container">
+                    <!-- /component-container -->
+                </div>
+                <!-- /component -->
+            </section>
+        ]]></UITemplate>
+
+        <Template bindings="1=section"><![CDATA[
+            <section>
+                [Content]
+            </section>
+        ]]></Template>
+    </Component>
+
+    <Component id="list01"
+               name="リスト"
+               type="Container"
+               content-type="#list-item01,#list-item03"
+    >
+        <UITemplate><![CDATA[
+            <section class="component">
+                <header>
+                    <h1 class="component-name">[Component Name]</h1>
+                    <div>
+                        <a class="component-command-remove" href="#">削除</a>
+                    </div>
+                </header>
+                <ul class="component-container">
+                    <!-- /component-container -->
+                </ul>
+                <!-- /component -->
+            </section>
+        ]]></UITemplate>
+
+        <Template bindings="1=ul"><![CDATA[
+            <ul>
+                [Content]
+            </ul>
+        ]]></Template>
+    </Component>
+
+    <Component id="list02"
+               name="見出し付きリスト"
+               type="Container"
+               content-type="#list-item02"
+    >
+        <UITemplate><![CDATA[
+            <section class="component">
+                <header>
+                    <h1 class="component-name">[Component Name]</h1>
+                    <div>
+                        <a class="component-command-remove" href="#">削除</a>
+                    </div>
+                </header>
+                <ul class="component-container">
+                <!-- /component-container --></ul>
+            <!-- /component --></section>
+        ]]></UITemplate>
+
+        <Template bindings="1=ul"><![CDATA[
+            <ul>
+                [Content]
+            </ul>
+        ]]></Template>
+    </Component>
+
+    <Component id="list-item01"
+               name="項目"
+               type="Children"
+    >
+        <UITemplate><![CDATA[
+            <li class="component">
+                <input data-iroha-component-content="1" class="input-target" type="text" value="" />
+                <a class="component-command-remove" href="#">×</a>
+            </li>
+        ]]></UITemplate>
+
+        <Template bindings="1=li"><![CDATA[
+            <li>[Content]</li>
+        ]]></Template>
+    </Component>
+
+
+    <Component id="list-item02"
+               name="項目"
+               type="Children"
+    >
+        <UITemplate><![CDATA[
+            <li class="component">
+                <input class="input-target" data-iroha-component-content="1" type="text" value="" />:
+                <input class="input-target" data-iroha-component-content="2" type="text" value="" />
+                <a class="component-command-remove" href="#">×</a>
+            </li>
+        ]]></UITemplate>
+
+        <Template bindings="1=span.listitem-label, 2=span.listitem-content"><![CDATA[
+            <li>
+                <span class="listitem-label">[Content1]</span>: <span class="listitem-content">[Content2]</span>
+            </li>
+        ]]></Template>
+    </Component>
+
+    <Component id="list-item03"
+               name="リンク"
+               type="Children"
+    >
+        <UITemplate><![CDATA[
+            <li class="component">
+                <label>
+                    URL: <input data-iroha-component-content="1" class="input-target" type="text" value="" />
+                </label>
+                <br />
+                <label>
+                    ラベル: <input data-iroha-component-content="2" class="input-target" type="text" value="" />
+                </label>
+                <a class="component-command-remove" href="#">×</a>
+            </li>
+        ]]></UITemplate>
+
+        <Template bindings="1=a@href, 2=a"><![CDATA[
+            <li>
+                <a href="">[Content]</a>
+            </li>
+        ]]></Template>
+    </Component>
+
+    <Component id="definition-list01"
+           name="定義リスト"
+           type="Container"
+           content-type="#definition-list-item01,#definition-list-item02,#definition-list-item03"
+    >
+        <UITemplate>
+            <![CDATA[
+            <section class="component">
+                <header>
+                    <h1 class="component-name">[Component Name]</h1>
+                    <div>
+                        <a class="component-command-remove" href="#">削除</a>
+                    </div>
+                </header>
+                <ul class="component-container">
+                <!-- /component-container --></ul>
+            <!-- /component --></section>
+        ]]>
+        </UITemplate>
+
+        <Template bindings="1=dl">
+            <![CDATA[
+            <dl>
+                [Content]
+            </dl>
+        ]]>
+        </Template>
+    </Component>
+    <Component id="definition-list-item01"
+           name="定義語"
+           type="Children"
+    >
+        <UITemplate>
+            <![CDATA[
+            <dt class="component">
+                <input data-iroha-component-content="1" class="input-target" type="text" value="" />
+                <a class="component-command-remove" href="#">×</a>
+            </dt>
+        ]]>
+        </UITemplate>
+
+        <Template bindings="1=dt">
+            <![CDATA[
+            <dt>
+                [Content]
+            </dt>
+        ]]>
+        </Template>
+    </Component>
+    <Component id="definition-list-item02"
+           name="意味"
+           type="Children"
+    >
+        <UITemplate>
+            <![CDATA[
+            <dd class="component">
+                <input data-iroha-component-content="1" class="input-target" type="text" value="" />
+                <a class="component-command-remove" href="#">×</a>
+            </dd>
+        ]]>
+        </UITemplate>
+
+        <Template bindings="1=dd">
+            <![CDATA[
+            <dd>
+                [Content]
+            </dd>
+        ]]>
+        </Template>
+    </Component>
+    <Component id="definition-list-item03"
+           name="意味(ブロック)"
+           type="Children"
+           content-type="@Container,@Generic"
+    >
+        <UITemplate>
+            <![CDATA[
+            <dd class="component">
+                <header>
+                    <h1 class="component-name">[Component Name]</h1>
+                    <div>
+                        <a class="component-command-remove" href="#">削除</a>
+                    </div>
+                </header>
+                <ul class="component-container">
+                <!-- /component-container --></ul>
+            <!-- /component --></dd>
+        ]]>
+        </UITemplate>
+
+        <Template bindings="1=dd">
+            <![CDATA[
+            <dd>
+                [Content]
+            </dd>
+        ]]>
+        </Template>
+    </Component>
+
+    <Component id="raw-html01"
+               name="HTML"
+               type="Generic"
+               hidden="true"
+    >
+        <UITemplate>
+            <![CDATA[
+            <textarea class="input-target" data-iroha-component-content="1"></textarea>
+        ]]>
+        </UITemplate>
+
+        <Template bindings="1=div|raw">
+            <![CDATA[
+            <div>[Content]</div>
+        ]]>
+        </Template>
+
+
+    </Component>
+</Components>
